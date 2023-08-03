@@ -7,8 +7,10 @@ import {
   TextInput,
   TouchableOpacity,
   ImageBackground,
+  Image,
 } from "react-native";
 import DropShadow from "react-native-drop-shadow";
+import FadeIn from "react-native-fade-in-image";
 import LinearGradient from "react-native-linear-gradient";
 
 import { BlurView } from "@react-native-community/blur";
@@ -214,8 +216,13 @@ const Main = () => {
       height: topHeight[page],
     },
     backgroundImage: {
-      flex: 1,
+      width: "100%",
+      height: "100%",
       opacity: 0.7,
+    },
+    image: {
+      width: "100%",
+      height: "100%",
     },
     backgroundGradient: {
       position: "absolute",
@@ -281,9 +288,11 @@ const Main = () => {
       left: "50%",
       right: 0,
       bottom: 0,
+      opacity: 0.16,
     },
     itemBackgroundImage: {
-      flex: 1,
+      width: "100%",
+      height: "100%",
       opacity: 0.16,
     },
     partContent: {
@@ -375,11 +384,14 @@ const Main = () => {
                 onPress={() => {
                   navigation.navigate("Profile");
                 }}>
-                <ImageBackground
-                  style={styles.backgroundImage}
-                  source={require("@app/res/images/profile.png")}
-                  resizeMode="cover"
-                />
+                <FadeIn>
+                  <Image
+                    style={styles.image}
+                    source={require("@app/res/images/profile.png")}
+                    resizeMode="cover"
+                    fadeDuration={500}
+                  />
+                </FadeIn>
               </TouchableOpacity>
             </View>
           </View>
@@ -466,11 +478,14 @@ const Main = () => {
                   getHexOpacity(colors.g100, 100),
                 ]}
               />
-              <ImageBackground
-                style={styles.backgroundImage}
-                source={require("@app/res/images/background.png")}
-                resizeMode="cover"
-              />
+              <FadeIn>
+                <Image
+                  style={styles.backgroundImage}
+                  source={require("@app/res/images/background.png")}
+                  resizeMode="cover"
+                  fadeDuration={500}
+                />
+              </FadeIn>
             </>
           )}
         </View>
@@ -520,11 +535,14 @@ const Main = () => {
                         getHexOpacity(colors.g100, 100),
                       ]}
                     />
-                    <ImageBackground
-                      style={styles.itemBackgroundImage}
-                      source={item.background}
-                      resizeMode="cover"
-                    />
+                    <FadeIn>
+                      <Image
+                        style={styles.background}
+                        source={item.background}
+                        resizeMode="cover"
+                        fadeDuration={500}
+                      />
+                    </FadeIn>
                   </View>
                 </View>
               </TouchableOpacity>
