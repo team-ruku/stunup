@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
+import SplashScreen from "react-native-splash-screen";
 
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -13,6 +14,7 @@ import Root from "./screens";
 const App = () => {
   const { colors } = React.useContext(ThemeContext);
   const onLayout = () => {
+    SplashScreen.hide();
     log("REND", "onLayout");
   };
 
