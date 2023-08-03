@@ -451,57 +451,59 @@ const Main = () => {
         </View>
         {page === 0 ? (
           <View style={styles.content}>
-            {items.map(
-              (item, index) =>
-                (selectedCategory === "all" ||
-                  item.categories.includes(selectedCategory)) && (
-                  <TouchableOpacity key={index}>
-                    <View style={styles.item}>
-                      <View style={styles.itemInner}>
-                        <View style={styles.itemTop}>
-                          <View style={styles.itemText}>
-                            <Text style={styles.itemTitle}>{item.title}</Text>
-                            <Text style={styles.itemDesc}>{item.desc}</Text>
-                          </View>
-                          <SvgIcon name="DetailSvg" fill={colors.g600} />
-                        </View>
-                        <View style={styles.itemInfo}>
-                          {item.categories.map((category, categoryIndex) => (
-                            <View
-                              style={styles.itemCategory}
-                              key={categoryIndex}>
-                              <SvgIcon
-                                name={`Category${categories[category].icon}Svg`}
-                                fill={colors.g500}
-                              />
-                              <Text style={styles.itemCategoryText}>
-                                {categories[category].name}
-                              </Text>
-                            </View>
-                          ))}
-                          <Text style={styles.itemDetail}>{item.detail}</Text>
-                        </View>
+            {items.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  display:
+                    selectedCategory === "all" ||
+                    item.categories.includes(selectedCategory)
+                      ? "flex"
+                      : "none",
+                }}>
+                <View style={styles.item}>
+                  <View style={styles.itemInner}>
+                    <View style={styles.itemTop}>
+                      <View style={styles.itemText}>
+                        <Text style={styles.itemTitle}>{item.title}</Text>
+                        <Text style={styles.itemDesc}>{item.desc}</Text>
                       </View>
-                      <View style={styles.itemBackground}>
-                        <LinearGradient
-                          style={styles.backgroundGradient}
-                          start={{ x: 1, y: 0 }}
-                          end={{ x: 0, y: 0 }}
-                          colors={[
-                            getHexOpacity(colors.g100, 0),
-                            getHexOpacity(colors.g100, 100),
-                          ]}
-                        />
-                        <ImageBackground
-                          style={styles.itemBackgroundImage}
-                          source={item.background}
-                          resizeMode="cover"
-                        />
-                      </View>
+                      <SvgIcon name="DetailSvg" fill={colors.g600} />
                     </View>
-                  </TouchableOpacity>
-                ),
-            )}
+                    <View style={styles.itemInfo}>
+                      {item.categories.map((category, categoryIndex) => (
+                        <View style={styles.itemCategory} key={categoryIndex}>
+                          <SvgIcon
+                            name={`Category${categories[category].icon}Svg`}
+                            fill={colors.g500}
+                          />
+                          <Text style={styles.itemCategoryText}>
+                            {categories[category].name}
+                          </Text>
+                        </View>
+                      ))}
+                      <Text style={styles.itemDetail}>{item.detail}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.itemBackground}>
+                    <LinearGradient
+                      style={styles.backgroundGradient}
+                      start={{ x: 1, y: 0 }}
+                      end={{ x: 0, y: 0 }}
+                      colors={[
+                        getHexOpacity(colors.g100, 0),
+                        getHexOpacity(colors.g100, 100),
+                      ]}
+                    />
+                    <ImageBackground
+                      style={styles.itemBackgroundImage}
+                      source={item.background}
+                      resizeMode="cover"
+                    />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
         ) : null}
       </ScrollView>
