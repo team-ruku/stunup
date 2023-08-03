@@ -286,6 +286,24 @@ const Main = () => {
       flex: 1,
       opacity: 0.16,
     },
+    partContent: {
+      padding: 16,
+      paddingBottom: insets.bottom + 16,
+      gap: 48,
+    },
+    part: {
+      gap: 16,
+    },
+    partHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      paddingHorizontal: 4,
+    },
+    partTitle: {
+      ...fonts.sectionTitle,
+      color: colors.g900,
+    },
   });
 
   return (
@@ -341,7 +359,10 @@ const Main = () => {
             <View style={styles.headerMenus}>
               <DropShadow style={themes.shadow}>
                 <View style={styles.headerQuestion}>
-                  <SvgIcon name="HeaderMenuQuestionSvg" fill={colors.g600} />
+                  <SvgIcon
+                    name={page ? "HeaderMenuJobSvg" : "HeaderMenuQuestionSvg"}
+                    fill={colors.g600}
+                  />
                   <BlurView
                     style={styles.blur}
                     blurType={colorScheme}
@@ -436,18 +457,22 @@ const Main = () => {
       </View>
       <ScrollView style={styles.scroll}>
         <View style={styles.background}>
-          <LinearGradient
-            style={styles.backgroundGradient}
-            colors={[
-              getHexOpacity(colors.g100, 0),
-              getHexOpacity(colors.g100, 100),
-            ]}
-          />
-          <ImageBackground
-            style={styles.backgroundImage}
-            source={require("@app/res/images/background.png")}
-            resizeMode="cover"
-          />
+          {page === 0 && (
+            <>
+              <LinearGradient
+                style={styles.backgroundGradient}
+                colors={[
+                  getHexOpacity(colors.g100, 0),
+                  getHexOpacity(colors.g100, 100),
+                ]}
+              />
+              <ImageBackground
+                style={styles.backgroundImage}
+                source={require("@app/res/images/background.png")}
+                resizeMode="cover"
+              />
+            </>
+          )}
         </View>
         {page === 0 ? (
           <View style={styles.content}>
@@ -505,9 +530,131 @@ const Main = () => {
               </TouchableOpacity>
             ))}
           </View>
-        ) : null}
+        ) : (
+          <View style={styles.partContent}>
+            <View style={styles.part}>
+              <TouchableOpacity style={styles.partHeader}>
+                <Text style={styles.partTitle}>시장조사</Text>
+                <SvgIcon name="PartDetailSvg" fill={colors.g600} />
+              </TouchableOpacity>
+              <Item
+                item={{
+                  title: "카카오&SM, 북미 통합 법인 출범 ...",
+                  desc: "아이템과 관련된 기사",
+                  category: "뉴스",
+                  categoryIcon: "News",
+                  detail: "음원 유통, 새 법인 출범 등",
+                }}
+              />
+            </View>
+            <View style={styles.part}>
+              <TouchableOpacity style={styles.partHeader}>
+                <Text style={styles.partTitle}>투자 프로그램</Text>
+                <SvgIcon name="PartDetailSvg" fill={colors.g600} />
+              </TouchableOpacity>
+              <Item
+                item={{
+                  title: "kakao M 투자 프로그램",
+                  desc: "음원 유통 & 배포 분야 투자",
+                  category: "투자",
+                  categoryIcon: "Invest",
+                  detail: "5천만원 ~ 1억",
+                }}
+              />
+            </View>
+            <View style={styles.part}>
+              <TouchableOpacity style={styles.partHeader}>
+                <Text style={styles.partTitle}>진흥원 프로그램</Text>
+                <SvgIcon name="PartDetailSvg" fill={colors.g600} />
+              </TouchableOpacity>
+              <Item
+                item={{
+                  title: "음악 디깅하기",
+                  desc: "조현우님의 취미를 분석했어요",
+                  category: "활동",
+                  categoryIcon: "Activity",
+                  detail: "JPEGMAFIA, Frank Ocean 등",
+                }}
+              />
+            </View>
+          </View>
+        )}
       </ScrollView>
     </View>
+  );
+};
+
+const Item = ({ item }) => {
+  const { colors, fonts } = React.useContext(ThemeContext);
+
+  const styles = StyleSheet.create({
+    item: {
+      padding: 20,
+      borderWidth: 1,
+      borderColor: colors.g300,
+      borderRadius: 16,
+      overflow: "hidden",
+    },
+    itemInner: {
+      gap: 24,
+    },
+    itemTop: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    itemText: {
+      gap: 4,
+    },
+    itemTitle: {
+      ...fonts.sectionTitle,
+      color: colors.g900,
+    },
+    itemDesc: {
+      ...fonts.sectionDesc,
+      color: colors.g600,
+    },
+    itemInfo: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    itemCategory: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    itemCategoryText: {
+      ...fonts.itemTitle,
+      color: colors.g500,
+    },
+    itemDetail: {
+      ...fonts.itemDesc,
+      color: colors.g500,
+    },
+  });
+
+  return (
+    <TouchableOpacity>
+      <View style={styles.item}>
+        <View style={styles.itemInner}>
+          <View style={styles.itemTop}>
+            <View style={styles.itemText}>
+              <Text style={styles.itemTitle}>{item.title}</Text>
+              <Text style={styles.itemDesc}>{item.desc}</Text>
+            </View>
+            <SvgIcon name="DetailSvg" fill={colors.g600} />
+          </View>
+          <View style={styles.itemInfo}>
+            <View style={styles.itemCategory}>
+              <SvgIcon name={"CategoryActivitySvg"} fill={colors.g500} />
+              <Text style={styles.itemCategoryText}>뉴스</Text>
+            </View>
+            <Text style={styles.itemDetail}>{item.detail}</Text>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 

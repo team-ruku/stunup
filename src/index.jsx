@@ -1,5 +1,4 @@
 import React from "react";
-import { View, Text } from "react-native";
 import SplashScreen from "react-native-splash-screen";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -8,8 +7,6 @@ import { ThemeContext } from "@app/context/theme";
 import { log } from "@app/utils/logging";
 
 import Root from "./screens";
-
-//import Root from "./screens";
 
 const App = () => {
   const { colors } = React.useContext(ThemeContext);
