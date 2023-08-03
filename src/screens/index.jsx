@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { log } from "@app/utils/logging";
 
 import Main from "./main";
+import Profile from "./profile";
 
 const Stack = createStackNavigator();
 const Root = () => {
@@ -14,9 +15,9 @@ const Root = () => {
       initialRouteName="Main"
       screenOptions={{
         headerShown: false,
-        animationEnabled: false,
       }}>
       <Stack.Screen name="Main" component={Main} />
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );
 };

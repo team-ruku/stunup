@@ -12,6 +12,7 @@ import DropShadow from "react-native-drop-shadow";
 import LinearGradient from "react-native-linear-gradient";
 
 import { BlurView } from "@react-native-community/blur";
+import { useNavigation } from "@react-navigation/native";
 
 import { SvgIcon } from "@app/components";
 import { ThemeContext } from "@app/context/theme";
@@ -21,6 +22,8 @@ const Main = () => {
     React.useContext(ThemeContext);
   const [topHeight, setTopHeight] = React.useState(0);
   const [selectedCategory, setSelectedCategory] = React.useState("all");
+
+  const navigation = useNavigation();
 
   const categories = {
     all: {
@@ -312,13 +315,17 @@ const Main = () => {
                   />
                 </View>
               </DropShadow>
-              <View style={styles.headerProfile}>
+              <TouchableOpacity
+                style={styles.headerProfile}
+                onPress={() => {
+                  navigation.navigate("Profile");
+                }}>
                 <ImageBackground
                   style={styles.backgroundImage}
                   source={require("@app/res/images/profile.png")}
                   resizeMode="cover"
                 />
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
           <TouchableOpacity style={styles.continue}>

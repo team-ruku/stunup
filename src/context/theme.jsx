@@ -110,6 +110,11 @@ const ThemeProvider = ({ children }) => {
       fontSize: 44,
       lineHeight: 44 * 1.2,
     },
+    paragraph: {
+      fontFamily: "SUIT-Medium",
+      fontSize: 14,
+      lineHeight: 14 * 1.8,
+    },
   });
 
   const insets = useSafeAreaInsets();
