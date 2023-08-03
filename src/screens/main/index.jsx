@@ -20,7 +20,8 @@ import { ThemeContext } from "@app/context/theme";
 const Main = () => {
   const { colorScheme, colors, getHexOpacity, themes, fonts, insets } =
     React.useContext(ThemeContext);
-  const [topHeight, setTopHeight] = React.useState(0);
+  const [topHeight, setTopHeight] = React.useState([0, 0]);
+  const [page, setPage] = React.useState(0);
   const [selectedCategory, setSelectedCategory] = React.useState("all");
 
   const navigation = useNavigation();
@@ -122,6 +123,8 @@ const Main = () => {
       flexDirection: "row",
       alignItems: "center",
       gap: 12,
+      padding: 10,
+      margin: -10,
     },
     headerMenuText: {
       ...fonts.decorative,
@@ -208,7 +211,7 @@ const Main = () => {
       color: colors.g100,
     },
     background: {
-      height: topHeight,
+      height: topHeight[page],
     },
     backgroundImage: {
       flex: 1,
@@ -291,23 +294,54 @@ const Main = () => {
         style={styles.over}
         onLayout={(event) => {
           const { height } = event.nativeEvent.layout;
-          setTopHeight(height);
+          if (page === 0) {
+            setTopHeight((pre) => [height, pre[1]]);
+          } else {
+            setTopHeight((pre) => [pre[0], height]);
+          }
         }}>
         <View style={styles.overInner}>
           <View style={styles.header}>
             <View style={styles.headerMenus}>
-              <View style={styles.headerMenu}>
-                <SvgIcon name={"HeaderStunSvg"} fill={colors.g1000} />
-                <Text style={styles.headerMenuTextActive}>STUN</Text>
-              </View>
-              <View style={styles.headerMenu}>
-                <Text style={styles.headerMenuText}>UP</Text>
-              </View>
+              <TouchableOpacity
+                style={styles.headerMenu}
+                onPress={() => {
+                  setPage(0);
+                }}>
+                {page === 0 && (
+                  <SvgIcon name="HeaderStunSvg" fill={colors.g1000} />
+                )}
+                <Text
+                  style={
+                    page === 0
+                      ? styles.headerMenuTextActive
+                      : styles.headerMenuText
+                  }>
+                  STUN
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.headerMenu}
+                onPress={() => {
+                  setPage(1);
+                }}>
+                {page === 1 && (
+                  <SvgIcon name="HeaderUpSvg" fill={colors.g1000} />
+                )}
+                <Text
+                  style={
+                    page === 1
+                      ? styles.headerMenuTextActive
+                      : styles.headerMenuText
+                  }>
+                  UP
+                </Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.headerMenus}>
               <DropShadow style={themes.shadow}>
                 <View style={styles.headerQuestion}>
-                  <SvgIcon name={"HeaderMenuQuestionSvg"} fill={colors.g600} />
+                  <SvgIcon name="HeaderMenuQuestionSvg" fill={colors.g600} />
                   <BlurView
                     style={styles.blur}
                     blurType={colorScheme}
@@ -328,54 +362,75 @@ const Main = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <TouchableOpacity style={styles.continue}>
-            <Text style={styles.continueTitle}>계속 활동</Text>
+          <TouchableOpacity style={styles.continue} disabled={page}>
+            <Text style={styles.continueTitle}>
+              {page ? "아이템 빌딩 현황 - Step 2" : "계속 활동"}
+            </Text>
             <View style={styles.continueTarget}>
-              <Text style={styles.continueTargetText}>음악 디깅하기</Text>
-              <SvgIcon name={"ArrowSvg"} fill={colors.g600} />
+              <Text style={styles.continueTargetText}>
+                {page ? "아이템 구체화" : "음악 디깅하기"}
+              </Text>
+              {page === 0 && <SvgIcon name="ArrowSvg" fill={colors.g600} />}
             </View>
           </TouchableOpacity>
+          {page === 1 && (
+            <SvgIcon
+              name="StageSvg"
+              fill={colors.g1000}
+              style={{
+                marginTop: -8,
+              }}
+            />
+          )}
           <View style={styles.search}>
-            <SvgIcon name={"SearchSvg"} fill={colors.g500} />
+            <SvgIcon name="SearchSvg" fill={colors.g500} />
             <TextInput
               style={styles.searchInput}
-              placeholder="활동명, 설명 등으로 검색"
+              placeholder={
+                page
+                  ? "투자 프로그램, 진흥원 프로그램 명으로 검색"
+                  : "활동명, 설명 등으로 검색"
+              }
               placeholderTextColor={colors.g500}
             />
           </View>
-          <ScrollView
-            style={styles.categories}
-            horizontal
-            showsHorizontalScrollIndicator={false}>
-            <View style={styles.categoriesInner}>
-              {Object.keys(categories).map((category) => (
-                <TouchableOpacity
-                  style={[
-                    styles.category,
-                    category === selectedCategory && styles.categorySelected,
-                  ]}
-                  key={category}
-                  onPress={() => {
-                    setSelectedCategory(category);
-                  }}>
-                  <SvgIcon
-                    name={`Category${categories[category].icon}Svg`}
-                    fill={
-                      category === selectedCategory ? colors.g100 : colors.g600
-                    }
-                  />
-                  <Text
+          {page === 0 && (
+            <ScrollView
+              style={styles.categories}
+              horizontal
+              showsHorizontalScrollIndicator={false}>
+              <View style={styles.categoriesInner}>
+                {Object.keys(categories).map((category) => (
+                  <TouchableOpacity
                     style={[
-                      styles.categoryText,
-                      category === selectedCategory &&
-                        styles.categoryTextSelected,
-                    ]}>
-                    {categories[category].name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </ScrollView>
+                      styles.category,
+                      category === selectedCategory && styles.categorySelected,
+                    ]}
+                    key={category}
+                    onPress={() => {
+                      setSelectedCategory(category);
+                    }}>
+                    <SvgIcon
+                      name={`Category${categories[category].icon}Svg`}
+                      fill={
+                        category === selectedCategory
+                          ? colors.g100
+                          : colors.g600
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.categoryText,
+                        category === selectedCategory &&
+                          styles.categoryTextSelected,
+                      ]}>
+                      {categories[category].name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          )}
         </View>
         <BlurView style={styles.blur} blurType={colorScheme} blurAmount={40} />
       </View>
@@ -394,57 +449,61 @@ const Main = () => {
             resizeMode="cover"
           />
         </View>
-        <View style={styles.content}>
-          {items.map(
-            (item, index) =>
-              (selectedCategory === "all" ||
-                item.categories.includes(selectedCategory)) && (
-                <TouchableOpacity key={index}>
-                  <View style={styles.item}>
-                    <View style={styles.itemInner}>
-                      <View style={styles.itemTop}>
-                        <View style={styles.itemText}>
-                          <Text style={styles.itemTitle}>{item.title}</Text>
-                          <Text style={styles.itemDesc}>{item.desc}</Text>
-                        </View>
-                        <SvgIcon name="DetailSvg" fill={colors.g600} />
-                      </View>
-                      <View style={styles.itemInfo}>
-                        {item.categories.map((category, categoryIndex) => (
-                          <View style={styles.itemCategory} key={categoryIndex}>
-                            <SvgIcon
-                              name={`Category${categories[category].icon}Svg`}
-                              fill={colors.g500}
-                            />
-                            <Text style={styles.itemCategoryText}>
-                              {categories[category].name}
-                            </Text>
+        {page === 0 ? (
+          <View style={styles.content}>
+            {items.map(
+              (item, index) =>
+                (selectedCategory === "all" ||
+                  item.categories.includes(selectedCategory)) && (
+                  <TouchableOpacity key={index}>
+                    <View style={styles.item}>
+                      <View style={styles.itemInner}>
+                        <View style={styles.itemTop}>
+                          <View style={styles.itemText}>
+                            <Text style={styles.itemTitle}>{item.title}</Text>
+                            <Text style={styles.itemDesc}>{item.desc}</Text>
                           </View>
-                        ))}
-                        <Text style={styles.itemDetail}>{item.detail}</Text>
+                          <SvgIcon name="DetailSvg" fill={colors.g600} />
+                        </View>
+                        <View style={styles.itemInfo}>
+                          {item.categories.map((category, categoryIndex) => (
+                            <View
+                              style={styles.itemCategory}
+                              key={categoryIndex}>
+                              <SvgIcon
+                                name={`Category${categories[category].icon}Svg`}
+                                fill={colors.g500}
+                              />
+                              <Text style={styles.itemCategoryText}>
+                                {categories[category].name}
+                              </Text>
+                            </View>
+                          ))}
+                          <Text style={styles.itemDetail}>{item.detail}</Text>
+                        </View>
+                      </View>
+                      <View style={styles.itemBackground}>
+                        <LinearGradient
+                          style={styles.backgroundGradient}
+                          start={{ x: 1, y: 0 }}
+                          end={{ x: 0, y: 0 }}
+                          colors={[
+                            getHexOpacity(colors.g100, 0),
+                            getHexOpacity(colors.g100, 100),
+                          ]}
+                        />
+                        <ImageBackground
+                          style={styles.itemBackgroundImage}
+                          source={item.background}
+                          resizeMode="cover"
+                        />
                       </View>
                     </View>
-                    <View style={styles.itemBackground}>
-                      <LinearGradient
-                        style={styles.backgroundGradient}
-                        start={{ x: 1, y: 0 }}
-                        end={{ x: 0, y: 0 }}
-                        colors={[
-                          getHexOpacity(colors.g100, 0),
-                          getHexOpacity(colors.g100, 100),
-                        ]}
-                      />
-                      <ImageBackground
-                        style={styles.itemBackgroundImage}
-                        source={item.background}
-                        resizeMode="cover"
-                      />
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ),
-          )}
-        </View>
+                  </TouchableOpacity>
+                ),
+            )}
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   );
