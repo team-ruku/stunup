@@ -6,7 +6,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  ImageBackground,
   Image,
 } from "react-native";
 import DropShadow from "react-native-drop-shadow";
