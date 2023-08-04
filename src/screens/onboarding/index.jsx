@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  TextInput,
+  Animated,
 } from "react-native";
 import FadeIn from "react-native-fade-in-image";
 
@@ -25,13 +27,15 @@ const OnBoarding = () => {
         headerShown: false,
       }}>
       <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Editor" component={Editor} />
+      <Stack.Screen name="Loading" component={Loading} />
+      <Stack.Screen name="Done" component={Done} />
     </Stack.Navigator>
   );
 };
 
 const Welcome = () => {
-  const { colorScheme, colors, getHexOpacity, themes, fonts, insets } =
-    React.useContext(ThemeContext);
+  const { colors, fonts, insets } = React.useContext(ThemeContext);
 
   const width = Dimensions.get("window").width;
   const navigation = useNavigation();
@@ -224,7 +228,11 @@ const Welcome = () => {
         </ScrollView>
       </View>
       <View style={styles.bottom}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            navigation.navigate("Editor");
+          }}>
           <Text style={styles.buttonText}>가입하기</Text>
         </TouchableOpacity>
         <View style={styles.login}>
@@ -233,6 +241,302 @@ const Welcome = () => {
             <Text style={styles.loginLink}>로그인하기</Text>
           </TouchableOpacity>
         </View>
+      </View>
+    </View>
+  );
+};
+
+const Editor = () => {
+  const { colorScheme, colors, getHexOpacity, themes, fonts, insets } =
+    React.useContext(ThemeContext);
+
+  const navigation = useNavigation();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+    },
+    over: {
+      padding: 20,
+      gap: 24,
+    },
+    header: {
+      height: 48,
+      alignItems: "flex-start",
+      justifyContent: "center",
+    },
+    back: {
+      transform: [{ rotate: "180deg" }],
+      padding: 16,
+      margin: -16,
+    },
+    text: {
+      gap: 8,
+    },
+    title: {
+      ...fonts.big,
+      color: colors.g900,
+    },
+    desc: {
+      ...fonts.sectionTitle,
+      color: colors.g500,
+    },
+    introducing: {
+      ...fonts.paragraph,
+      color: colors.g700,
+    },
+    content: {
+      flex: 1,
+      paddingVertical: 20,
+      paddingHorizontal: 16,
+    },
+    input: {
+      flex: 1,
+      backgroundColor: colors.search,
+      borderWidth: 1,
+      borderColor: colors.g300,
+      borderRadius: 12,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      paddingTop: 12,
+    },
+    bottom: {
+      paddingVertical: 20,
+      paddingHorizontal: 16,
+    },
+    button: {
+      alignItems: "center",
+      backgroundColor: colors.g1000,
+      padding: 16,
+      borderRadius: 100,
+    },
+    buttonText: {
+      fontFamily: "SUIT-Medium",
+      fontSize: 14,
+      color: colors.g100,
+    },
+  });
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.over}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.back}
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <SvgIcon name="ArrowSvg" fill={colors.g600} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.text}>
+          <Text style={styles.desc}>기초 설정</Text>
+          <Text style={styles.title}>자유 글 입력</Text>
+        </View>
+        <Text style={styles.introducing}>
+          여러분을 분석하기 위해 자유로운 형태로 글을 써주셔야 합니다. 글에는
+          여러분이 잘하는 것, 좋아하는 것, 취미 생활이나 여러분의 건강 상태,
+          인간관계 및 사회 생활을 위주로 적어주세요.
+        </Text>
+      </View>
+      <View style={styles.content}>
+        <TextInput
+          style={styles.input}
+          multiline={true}
+          placeholder="여기에 글을 적어주세요"
+          placeholderTextColor={colors.g500}
+          blurOnSubmit
+        />
+      </View>
+      <View style={styles.bottom}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Loading" }],
+            });
+          }}>
+          <Text style={styles.buttonText}>제출하기</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const Loading = () => {
+  const { colors, fonts, insets } = React.useContext(ThemeContext);
+
+  const navigation = useNavigation();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 36,
+      padding: 20,
+    },
+    title: {
+      ...fonts.big,
+      color: colors.g900,
+    },
+    loading: {
+      alignSelf: "stretch",
+      height: 6,
+      borderRadius: 3,
+      overflow: "hidden",
+      backgroundColor: colors.g300,
+      alignItems: "flex-start",
+    },
+    loadingFill: {
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: colors.active,
+      width: "50%",
+    },
+  });
+
+  const width = React.useRef(new Animated.Value(0)).current;
+  React.useEffect(() => {
+    Animated.timing(width, {
+      toValue: 1,
+      duration: 3000,
+      useNativeDriver: false,
+    }).start(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Done" }],
+      });
+    });
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>분석 중...</Text>
+      <View style={styles.loading}>
+        <Animated.View
+          style={[
+            styles.loadingFill,
+            {
+              width: width.interpolate({
+                inputRange: [0, 1],
+                outputRange: ["0%", "100%"],
+              }),
+            },
+          ]}
+        />
+      </View>
+    </View>
+  );
+};
+
+const Done = () => {
+  const { colors, fonts, insets } = React.useContext(ThemeContext);
+
+  const navigation = useNavigation();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+    },
+    over: {
+      padding: 20,
+      gap: 24,
+    },
+    header: {
+      height: 48,
+      alignItems: "flex-start",
+      justifyContent: "center",
+    },
+    back: {
+      transform: [{ rotate: "180deg" }],
+      padding: 16,
+      margin: -16,
+    },
+    text: {
+      gap: 8,
+    },
+    title: {
+      ...fonts.big,
+      color: colors.g900,
+    },
+    desc: {
+      ...fonts.sectionTitle,
+      color: colors.g500,
+    },
+    introducing: {
+      ...fonts.paragraph,
+      color: colors.g700,
+    },
+    content: {
+      flex: 1,
+      paddingVertical: 20,
+      paddingHorizontal: 16,
+    },
+    input: {
+      flex: 1,
+      backgroundColor: colors.search,
+      borderWidth: 1,
+      borderColor: colors.g300,
+      borderRadius: 12,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      paddingTop: 12,
+    },
+    bottom: {
+      paddingVertical: 20,
+      paddingHorizontal: 16,
+    },
+    button: {
+      alignItems: "center",
+      backgroundColor: colors.g1000,
+      padding: 16,
+      borderRadius: 100,
+    },
+    buttonText: {
+      fontFamily: "SUIT-Medium",
+      fontSize: 14,
+      color: colors.g100,
+    },
+  });
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.over}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.back}
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <SvgIcon name="ArrowSvg" fill={colors.g600} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.text}>
+          <Text style={styles.desc}>글 분석</Text>
+          <Text style={styles.title}>분석을 완료했어요!</Text>
+        </View>
+        <Text style={styles.introducing}>이제 STUNUP으로 출발해볼까요?</Text>
+      </View>
+      <View style={styles.content} />
+      <View style={styles.bottom}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Main" }],
+            });
+          }}>
+          <Text style={styles.buttonText}>출발하기</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
